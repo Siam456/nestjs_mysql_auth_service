@@ -7,12 +7,18 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/entity/user.entity';
+import { Uploader } from 'src/util/uploader';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { UserServices } from './user.service';
+import { Express } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -28,10 +34,14 @@ export class UserController {
     return this.userServices.getUser(id);
   }
 
+  @UseInterceptors(FileInterceptor('file', Uploader))
   @Post()
   @UsePipes(ValidationPipe)
-  async addUser(@Body() body: CreateUserDto): Promise<any> {
-    return this.userServices.addUser(body);
+  async addUser(
+    @Body() body: CreateUserDto,
+    @UploadedFile() avatar: Express.Multer.File,
+  ): Promise<any> {
+    return this.userServices.addUser(body, avatar);
   }
 
   @Delete('/:id')
