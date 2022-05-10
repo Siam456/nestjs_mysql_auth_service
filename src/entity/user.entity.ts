@@ -33,6 +33,18 @@ export class User {
   phone: string;
 
   @Column({
+    name: 'avatar',
+    default: null,
+  })
+  avatar: string;
+
+  @Column({
+    name: 'password',
+    nullable: false,
+  })
+  password: string;
+
+  @Column({
     name: 'role',
     type: 'enum',
     enum: UserRole,
